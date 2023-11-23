@@ -1,12 +1,7 @@
-const Products = () => {
-  fetch('https://fakestoreapi.com/products/5')
-    .then((res) => res.json())
-    .then((result) => console.log(result));
-
+const Products = ({ items }) => {
   return (
     <>
-      <h1>Products Page</h1>
-      <h2>test</h2>
+      <h1>{JSON.stringify(items)}</h1>
     </>
   );
 };
