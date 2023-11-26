@@ -9,9 +9,11 @@ import { v4 as uuidv4 } from 'uuid';
 
 const Root = () => {
   const { name } = useParams();
-  const [products, setProducts] = useState(); //add id and quan prop after fetching
+  const [products, setProducts] = useState([]); //add id and quan prop after fetching
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
+  const productsInCart =
+    products && products.filter((item) => item.quantity > 0);
   useEffect(() => {
     fetch('https://fakestoreapi.com/products?limit=10')
       .then((res) => {
@@ -95,24 +97,27 @@ const Root = () => {
           </Link>
         </div>
       </div>
-
       {/* content */}
       {/* second products to handle 'undefined' rendering (first render hasnt fetched yet) */}
-
-      {name === 'products' && loading ? (
-        <Loading />
-      ) : (
-        name === 'products' &&
-        products && (
-          <Products
-            productDataArray={products}
-            handleAddProductToCart={handleAddProductToCart}
-            handleDecreaseProductToCart={handleDecreaseProductToCart}
-          />
-        )
+      {name === 'products' && loading && <Loading />}
+      {name === 'products' && !loading && (
+        <Products
+          productDataArray={products}
+          handleAddProductToCart={handleAddProductToCart}
+          handleDecreaseProductToCart={handleDecreaseProductToCart}
+        />
       )}
       {name === 'contact' && <Contacts />}
-      {name === 'cart' && <Cart />}
+      {name === 'cart' && productsInCart.length === 0 && (
+        <h1>You havent put anything in the cart</h1>
+      )}
+      {name === 'cart' && productsInCart.length > 0 && (
+        <Cart
+          productsInCart={productsInCart}
+          handleAddProductToCart={handleAddProductToCart}
+          handleDecreaseProductToCart={handleDecreaseProductToCart}
+        />
+      )}
       {!name && <Home />}
     </>
   );
