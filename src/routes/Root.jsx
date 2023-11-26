@@ -10,15 +10,23 @@ import { v4 as uuidv4 } from 'uuid';
 const Root = () => {
   const { name } = useParams();
   const [products, setProducts] = useState([]); //add id and quan prop after fetching
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const productsInCart =
     products && products.filter((item) => item.quantity > 0);
+  console.log(loading);
+  //this one not run again when mount Product component, because i fetch in parent comp. i think if i fetch in Product Comp, it will fetch every time i mount
   useEffect(() => {
+    setLoading(true);
     fetch('https://fakestoreapi.com/products?limit=10')
       .then((res) => {
+        // setLoading(true);
         if (res.ok) {
-          return res.json(); //DONT FORGET TO RETURN HERE
+          return new Promise((resolve) =>
+            setTimeout(() => {
+              resolve(res.json());
+            }, 3000)
+          ); //DONT FORGET TO RETURN HERE
         } else {
           throw new Error('conn err');
         }
@@ -29,10 +37,14 @@ const Root = () => {
           ...item,
           quantity: 0,
         })); // DONT FORGET TO WRAP NEW OBJECT WITH PARENTHESES
+        // setTimeout(() => setProducts(newData), 3000); //imitate loading (DONT DO THIS, THIS BUG(WRONG THINKING, THIS ONE ONLY DELAY SETSTATE, NOT DELAY PROMISE RESOLVE))
         setProducts(newData);
       })
       .catch((err) => setError(err))
-      .finally(setLoading(false));
+      .finally(() => setLoading(false)); //dont forget callback, we dont want to invoke immediately
+    // return () => {
+    //   setLoading(true);
+    // };
   }, []);
 
   function handleAddProductToCart(id) {
@@ -99,6 +111,7 @@ const Root = () => {
       </div>
       {/* content */}
       {/* second products to handle 'undefined' rendering (first render hasnt fetched yet) */}
+      {/* why this line below, if i use && loading, it wont show Loading comp? */}
       {name === 'products' && loading && <Loading />}
       {name === 'products' && !loading && (
         <Products
