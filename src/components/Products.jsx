@@ -6,7 +6,7 @@ const Products = ({
   handleDecreaseProductToCart,
 }) => {
   return (
-    <div className="grid grid-cols-3 gap-10 ml-10 mr-10">
+    <div className="flex flex-col gap-10 justify-center items-center ml-10 mr-10 md:grid md:grid-cols-3 md:gap-10 md:place-items-center ">
       {productDataArray.map((item) => (
         <ProductDetail
           key={item.id}
