@@ -1,8 +1,15 @@
-import { useRouteError } from 'react-router-dom';
-
+import { useNavigate, useRouteError } from 'react-router-dom';
+import { useEffect } from 'react';
 export default function ErrorPage() {
+  const navigate = useNavigate();
+
   const error = useRouteError();
-  console.error(error);
+
+  useEffect(() => {
+    setTimeout(() => {
+      navigate('/'); //other options is can use navigate to back 1 page . (-1)
+    }, 3000);
+  }, []);
 
   return (
     <div

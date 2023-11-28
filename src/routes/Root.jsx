@@ -3,10 +3,10 @@ import { useState, useEffect } from 'react';
 import Products from '../components/Products';
 import Contacts from '../components/Contacts';
 import Cart from '../components/Cart';
-import Home from '../components/Home';
 import Loading from '../components/Loading';
 import { v4 as uuidv4 } from 'uuid';
-
+import NotFound from '../components/NotFound';
+import Home from '../components/Home';
 const Root = () => {
   const { name } = useParams();
   const [products, setProducts] = useState([]); //add id and quan prop after fetching
@@ -14,7 +14,6 @@ const Root = () => {
   const [error, setError] = useState();
   const productsInCart =
     products && products.filter((item) => item.quantity > 0);
-  console.log(loading);
   //this one not run again when mount Product component, because i fetch in parent comp. i think if i fetch in Product Comp, it will fetch every time i mount
   useEffect(() => {
     setLoading(true);
@@ -111,7 +110,8 @@ const Root = () => {
               />
             </svg>
             <div className="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full dark:border-gray-900">
-              {totalQuantity}
+              {/* {totalQuantity} */}
+              {productsInCart.length}
             </div>
           </Link>
         </div>
@@ -138,6 +138,8 @@ const Root = () => {
           handleDecreaseProductToCart={handleDecreaseProductToCart}
         />
       )}
+      {/* check if name is not one of item in array, we go Notfound */}
+      {name && !['products', 'contact', 'cart'].includes(name) && <NotFound />}
       {!name && <Home />}
     </>
   );
